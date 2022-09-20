@@ -3,4 +3,19 @@
     color: white;
     margin-top: 75px;
     text-align: center;
+    padding: 100px 0;
+}
+
+#small-mayimbe{
+    height: 100px;
+    width: 100px;
+}
+
+#Mayimbe{
+    color: #4D00ff;
+    font-size: 100px;
+}
+
+.bold{
+    font-weight: 900;
 }
