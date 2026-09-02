@@ -42,3 +42,49 @@ test('zero OT produces zero OT pay without NaN', () => {
   assert.equal(r.premium, 0);
   assert.equal(r.effective, 0);
 });
+
+test('actual OT input event changes total hours and displayed OT pay', async () => {
+  class FakeElement {
+    constructor(value='') {
+      this.value = value;
+      this.textContent = '';
+      this.innerHTML = '';
+      this.listeners = {};
+    }
+    addEventListener(type, fn) { this.listeners[type] = fn; }
+    dispatch(type) {
+      assert.equal(typeof this.listeners[type], 'function', `missing ${type} listener`);
+      this.listeners[type]({ target:this });
+    }
+  }
+
+  const elements = {
+    base:new FakeElement('43.98'),
+    otHours:new FakeElement('1.55'),
+    worked:new FakeElement('35.56'),
+    regularHours:new FakeElement('34.01'),
+    upsell:new FakeElement('185'),
+    shift:new FakeElement('24.42'),
+    other:new FakeElement('0'),
+    otPay:new FakeElement(),
+    blended:new FakeElement(),
+    premium:new FakeElement(),
+    effective:new FakeElement(),
+    formula:new FakeElement(),
+  };
+
+  globalThis.document = { getElementById(id) { return elements[id]; } };
+  try {
+    await import(`./calculator.mjs?ui-test=${Date.now()}`);
+    const beforePay = elements.otPay.textContent;
+
+    elements.otHours.value = '5.00';
+    elements.otHours.dispatch('input');
+
+    assert.equal(elements.worked.value, '39.01');
+    assert.notEqual(elements.otPay.textContent, beforePay);
+    assert.match(elements.formula.innerHTML, /5\.00/);
+  } finally {
+    delete globalThis.document;
+  }
+});
