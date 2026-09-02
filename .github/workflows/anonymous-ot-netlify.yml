@@ -1,4 +1,4 @@
-name: Anonymous OT Calculator Netlify
+name: OT Calculator Netlify
 
 on:
   workflow_dispatch:
@@ -8,6 +8,9 @@ on:
 
 permissions:
   contents: read
+
+env:
+  NETLIFY_SITE_ID: 22dc2a11-f5f1-48fe-b10f-5f4bf15712e1
 
 jobs:
   deploy:
@@ -43,18 +46,26 @@ jobs:
           done
           node ot-calculator/browser.test.mjs
 
-      - name: Deploy OT calculator anonymously to Netlify
-        run: npx --yes netlify-cli@latest deploy --allow-anonymous --dir=ot-calculator --json | tee netlify-deploy.json
-
-      - name: Preserve claim handoff
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: netlify-claim-handoff
-          path: netlify-deploy.json
-          retention-days: 1
-          if-no-files-found: error
+      - name: Deploy to claimed Netlify site
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "::notice::NETLIFY_AUTH_TOKEN is not configured yet. Tests passed, but deployment was skipped."
+            exit 0
+          fi
+          npx --yes netlify-cli@latest deploy \
+            --prod \
+            --dir=ot-calculator \
+            --site "$NETLIFY_SITE_ID" \
+            --auth "$NETLIFY_AUTH_TOKEN" \
+            --json | tee netlify-deploy.json
 
       - name: Show deploy result
         if: always()
-        run: cat netlify-deploy.json || true
+        run: |
+          if [ -f netlify-deploy.json ]; then
+            cat netlify-deploy.json
+          else
+            echo "No deployment result. Add the NETLIFY_AUTH_TOKEN repository secret to enable permanent-site deploys."
+          fi
