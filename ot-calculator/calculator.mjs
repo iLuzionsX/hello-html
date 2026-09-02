@@ -39,7 +39,9 @@ if (typeof document !== 'undefined') {
     document.getElementById('grossOtPay').textContent = money(r.grossOtPay);
     document.getElementById('blended').textContent = money(r.blended) + '/hr';
     document.getElementById('netEffective').textContent = money(r.netEffective) + '/hr';
-    document.getElementById('formula').innerHTML = `Gross OT = ${money(r.otStraight)} straight time + ${money(r.premium)} premium = <b>${money(r.grossOtPay)}</b><br>Estimated net OT = ${money(r.grossOtPay)} × ${Math.min(100,data.takeHomeRate).toFixed(2)}% take-home = <b>${money(r.netOtPay)}</b><br>Blended regular rate = <b>${money(r.blended)}/hr</b>`;
+    const keepRate = document.getElementById('keepRate');
+    if (keepRate) keepRate.textContent = (r.takeHome * 100).toFixed(2) + '%';
+    document.getElementById('formula').innerHTML = `Gross OT = ${money(r.otStraight)} straight time + ${money(r.premium)} premium = <b>${money(r.grossOtPay)}</b><br>Estimated net OT = ${money(r.grossOtPay)} × ${(r.takeHome * 100).toFixed(2)}% take-home = <b>${money(r.netOtPay)}</b><br>Blended regular rate = <b>${money(r.blended)}/hr</b>`;
   }
 
   els.otHours.addEventListener('input', () => {
