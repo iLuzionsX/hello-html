@@ -9,12 +9,14 @@ export function calculate({ base=0, ot=0, worked=0, reg=0, upsell=0, shift=0, ot
   return { regularPay, otStraight, includable, blended, premium, otPay, effective };
 }
 
+const roundHours = value => Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+
 export function syncFromOT(regularHours, otHours) {
-  return Math.max(0, regularHours) + Math.max(0, otHours);
+  return roundHours(Math.max(0, regularHours) + Math.max(0, otHours));
 }
 
 export function syncFromWorked(workedHours, otHours) {
-  return Math.max(0, Math.max(0, workedHours) - Math.max(0, otHours));
+  return roundHours(Math.max(0, Math.max(0, workedHours) - Math.max(0, otHours)));
 }
 
 if (typeof document !== 'undefined') {
@@ -22,7 +24,7 @@ if (typeof document !== 'undefined') {
   const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
   const money = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number.isFinite(n)?n:0);
   const v = id => Math.max(0, parseFloat(els[id].value) || 0);
-  const setHours = (id, value) => { els[id].value = Number(value.toFixed(2)); };
+  const setHours = (id, value) => { els[id].value = roundHours(value).toFixed(2); };
 
   function render() {
     const data = { base:v('base'), ot:v('otHours'), worked:v('worked'), reg:v('regularHours'), upsell:v('upsell'), shift:v('shift'), other:v('other') };
