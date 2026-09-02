@@ -46,6 +46,15 @@ jobs:
       - name: Deploy OT calculator anonymously to Netlify
         run: npx --yes netlify-cli@latest deploy --allow-anonymous --dir=ot-calculator --json | tee netlify-deploy.json
 
+      - name: Preserve claim handoff
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: netlify-claim-handoff
+          path: netlify-deploy.json
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Show deploy result
         if: always()
         run: cat netlify-deploy.json || true
