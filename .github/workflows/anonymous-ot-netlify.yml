@@ -21,10 +21,27 @@ jobs:
           test -f ot-calculator/index.html
           test -f ot-calculator/calculator.mjs
           test -f ot-calculator/calculator.test.mjs
+          test -f ot-calculator/browser.test.mjs
           ls -la ot-calculator
 
-      - name: Run calculator tests
+      - name: Run calculation tests
         run: node --test ot-calculator/calculator.test.mjs
+
+      - name: Install Playwright browser
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Run real browser test
+        run: |
+          python3 -m http.server 4173 --directory ot-calculator > /tmp/ot-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID' EXIT
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173 >/dev/null; then break; fi
+            sleep 0.5
+          done
+          node ot-calculator/browser.test.mjs
 
       - name: Deploy OT calculator anonymously to Netlify
         run: npx --yes netlify-cli@latest deploy --allow-anonymous --dir=ot-calculator --json | tee netlify-deploy.json
