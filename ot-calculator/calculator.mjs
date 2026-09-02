@@ -26,9 +26,18 @@ if (typeof document !== 'undefined') {
   const ids = ['base','otHours','worked','regularHours','upsell','shift','other','takeHomeRate'];
   const els = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
   const money = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number.isFinite(n)?n:0);
+  const moneyWhole = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number.isFinite(n)?n:0);
   const v = id => Math.max(0, parseFloat(els[id].value) || 0);
   const setHours = (id, value) => { els[id].value = roundHours(Math.max(0, value)).toFixed(2); };
-  const displayHours = value => Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/0$/, '');
+
+  function humanDuration(decimalHours) {
+    const totalMinutes = Math.max(0, Math.round(decimalHours * 60));
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours && minutes) return `${hours}h ${minutes}m`;
+    if (hours) return `${hours}h`;
+    return `${minutes}m`;
+  }
 
   function syncPresetState(ot) {
     document.querySelectorAll('.preset[data-ot-set]').forEach(button => {
@@ -43,25 +52,18 @@ if (typeof document !== 'undefined') {
       upsell:v('upsell'), shift:v('shift'), other:v('other'), takeHomeRate:v('takeHomeRate')
     };
     const r = calculate(data);
+    const withheld = Math.max(0, r.grossOtPay - r.netOtPay);
 
-    document.getElementById('netOtPay').textContent = money(r.netOtPay);
-    document.getElementById('grossOtPay').textContent = money(r.grossOtPay);
-    document.getElementById('blended').textContent = money(r.blended) + '/hr';
-    document.getElementById('netEffective').textContent = money(r.netEffective) + '/hr';
-
-    const keepRate = document.getElementById('keepRate');
-    if (keepRate) keepRate.textContent = (r.takeHome * 100).toFixed(2) + '%';
-
-    const resultHours = document.getElementById('resultHours');
-    if (resultHours) resultHours.textContent = `${displayHours(data.ot)}h OT`;
-
-    const profileSummary = document.getElementById('profileSummary');
-    if (profileSummary) profileSummary.textContent = `${money(data.base)}/hr · ${(r.takeHome * 100).toFixed(2)}% keep`;
-
-    document.getElementById('formula').innerHTML =
-      `Gross OT = ${money(r.otStraight)} straight time + ${money(r.premium)} premium = <b>${money(r.grossOtPay)}</b><br>` +
-      `Estimated net OT = ${money(r.grossOtPay)} × ${(r.takeHome * 100).toFixed(2)}% take-home = <b>${money(r.netOtPay)}</b><br>` +
-      `Blended regular rate = <b>${money(r.blended)}/hr</b>`;
+    document.getElementById('timeDisplay').textContent = humanDuration(data.ot);
+    document.getElementById('netOtPay').textContent = moneyWhole(r.netOtPay);
+    document.getElementById('grossOtPay').textContent = `${moneyWhole(r.grossOtPay)} gross`;
+    document.getElementById('withheldPay').textContent = `${moneyWhole(withheld)} withheld`;
+    document.getElementById('grossOtPayDetailed').textContent = money(r.grossOtPay);
+    document.getElementById('withheldDetailed').textContent = money(withheld);
+    document.getElementById('netEffective').textContent = `${money(r.netEffective)}/hr`;
+    document.getElementById('blended').textContent = `${money(r.blended)}/hr`;
+    document.getElementById('formula').textContent =
+      `Gross overtime includes straight time plus the extra half-time premium based on your blended regular rate. Estimated take-home is gross overtime × ${(r.takeHome * 100).toFixed(2)}%.`;
 
     syncPresetState(data.ot);
   }
@@ -76,8 +78,6 @@ if (typeof document !== 'undefined') {
     setHours('worked', syncFromOT(v('regularHours'), v('otHours')));
     render();
   });
-
-  els.otHours.addEventListener('blur', () => updateFromOT(v('otHours')));
 
   els.regularHours.addEventListener('input', () => {
     setHours('worked', syncFromOT(v('regularHours'), v('otHours')));
