@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OT Calculator</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; background:#0b0d10; color:#f6f7f9; display:flex; justify-content:center; padding:32px 16px; }
+    .wrap { width:min(760px,100%); }
+    h1 { font-size:clamp(2rem,8vw,4.5rem); line-height:.9; margin:0 0 12px; letter-spacing:-.06em; }
+    .sub { color:#9ca3af; margin:0 0 28px; }
+    .card { background:#12161c; border:1px solid #262d36; border-radius:24px; padding:20px; box-shadow:0 20px 70px rgba(0,0,0,.3); }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    label { display:block; font-size:.78rem; color:#9ca3af; margin-bottom:7px; text-transform:uppercase; letter-spacing:.08em; }
+    input { width:100%; border:1px solid #303845; background:#0e1217; color:white; border-radius:14px; padding:14px 15px; font-size:1rem; outline:none; }
+    input:focus { border-color:#6b7280; }
+    .span2 { grid-column:1/-1; }
+    .results { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .metric { background:#0e1217; border:1px solid #252c34; border-radius:18px; padding:16px; }
+    .metric small { color:#8b949e; display:block; margin-bottom:7px; }
+    .metric strong { font-size:1.5rem; letter-spacing:-.03em; }
+    .hero { grid-column:1/-1; padding:22px; }
+    .hero strong { font-size:clamp(2rem,8vw,4rem); }
+    .formula { margin-top:16px; padding:15px; border-radius:16px; background:#0d1116; color:#aeb6c0; font-size:.92rem; line-height:1.5; }
+    .note { color:#7f8792; font-size:.8rem; margin-top:14px; }
+    @media (max-width:640px){ .grid,.results{grid-template-columns:1fr;} .span2,.hero{grid-column:auto;} }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>OT<br>Calculator</h1>
+    <p class="sub">Estimate Marriott-style overtime when premiums, shift differential, and upsells affect your blended regular rate.</p>
+
+    <section class="card">
+      <div class="grid">
+        <div><label>Base hourly rate</label><input id="base" type="number" step="0.01" value="43.98"></div>
+        <div><label>Overtime hours</label><input id="otHours" type="number" step="0.01" value="1.55"></div>
+        <div><label>Total hours worked</label><input id="worked" type="number" step="0.01" value="35.56"></div>
+        <div><label>Regular hours</label><input id="regularHours" type="number" step="0.01" value="34.01"></div>
+        <div><label>Upsell / incentive pay</label><input id="upsell" type="number" step="0.01" value="185"></div>
+        <div><label>Shift differential</label><input id="shift" type="number" step="0.01" value="24.42"></div>
+        <div class="span2"><label>Other includable pay</label><input id="other" type="number" step="0.01" value="0"></div>
+      </div>
+
+      <div class="results">
+        <div class="metric hero"><small>Estimated overtime pay</small><strong id="otPay">$0.00</strong></div>
+        <div class="metric"><small>Blended regular rate</small><strong id="blended">$0.00/hr</strong></div>
+        <div class="metric"><small>OT premium only</small><strong id="premium">$0.00</strong></div>
+        <div class="metric"><small>Effective pay / OT hour</small><strong id="effective">$0.00</strong></div>
+      </div>
+
+      <div class="formula" id="formula"></div>
+      <div class="note">This calculator mirrors the structure visible on the uploaded paystubs: overtime straight time is paid at base rate, plus an additional 0.5× premium based on the blended regular rate. Payroll rules can vary by employer and by what compensation is legally includable in the regular rate.</div>
+    </section>
+  </main>
+<script>
+const ids=['base','otHours','worked','regularHours','upsell','shift','other'];
+ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number.isFinite(n)?n:0);
+function v(id){return parseFloat(document.getElementById(id).value)||0}
+function calc(){
+  const base=v('base'), ot=v('otHours'), worked=v('worked'), reg=v('regularHours'), upsell=v('upsell'), shift=v('shift'), other=v('other');
+  const regularPay=reg*base;
+  const otStraight=ot*base;
+  const includable=regularPay+otStraight+upsell+shift+other;
+  const blended=worked>0?includable/worked:0;
+  const premium=blended*.5*ot;
+  const otPay=otStraight+premium;
+  const effective=ot>0?otPay/ot:0;
+  document.getElementById('otPay').textContent=money(otPay);
+  document.getElementById('blended').textContent=money(blended)+'/hr';
+  document.getElementById('premium').textContent=money(premium);
+  document.getElementById('effective').textContent=money(effective)+'/hr';
+  document.getElementById('formula').innerHTML=`Blended rate = (${money(regularPay)} regular + ${money(otStraight)} OT straight + ${money(upsell)} upsell + ${money(shift)} shift diff + ${money(other)} other) ÷ ${worked.toFixed(2)} worked hours = <b>${money(blended)}/hr</b><br>OT premium = ${money(blended)} × 0.5 × ${ot.toFixed(2)} = <b>${money(premium)}</b><br>Total OT pay = ${money(otStraight)} + ${money(premium)} = <b>${money(otPay)}</b>`;
+}
+calc();
+</script>
+</body>
+</html>
