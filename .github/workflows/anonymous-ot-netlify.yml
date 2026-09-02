@@ -19,7 +19,12 @@ jobs:
       - name: Verify calculator files
         run: |
           test -f ot-calculator/index.html
+          test -f ot-calculator/calculator.mjs
+          test -f ot-calculator/calculator.test.mjs
           ls -la ot-calculator
+
+      - name: Run calculator tests
+        run: node --test ot-calculator/calculator.test.mjs
 
       - name: Deploy OT calculator anonymously to Netlify
         run: npx --yes netlify-cli@latest deploy --allow-anonymous --dir=ot-calculator --json | tee netlify-deploy.json
