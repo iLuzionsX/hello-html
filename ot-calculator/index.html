@@ -31,7 +31,7 @@
 <body>
   <main class="wrap">
     <h1>OT<br>Calculator</h1>
-    <p class="sub">Estimate Marriott-style overtime when premiums, shift differential, and upsells affect your blended regular rate.</p>
+    <p class="sub">Estimate the overtime money you actually keep after taxes and deductions.</p>
 
     <section class="card">
       <div class="grid">
@@ -41,18 +41,19 @@
         <div><label>Regular hours</label><input id="regularHours" type="number" min="0" step="0.01" value="34.01"></div>
         <div><label>Upsell / incentive pay</label><input id="upsell" type="number" min="0" step="0.01" value="185"></div>
         <div><label>Shift differential</label><input id="shift" type="number" min="0" step="0.01" value="24.42"></div>
-        <div class="span2"><label>Other includable pay</label><input id="other" type="number" min="0" step="0.01" value="0"></div>
+        <div><label>Take-home rate (%)</label><input id="takeHomeRate" type="number" min="0" max="100" step="0.01" value="63.45"></div>
+        <div><label>Other includable pay</label><input id="other" type="number" min="0" step="0.01" value="0"></div>
       </div>
 
       <div class="results">
-        <div class="metric hero"><small>Estimated overtime pay</small><strong id="otPay">$0.00</strong></div>
+        <div class="metric hero"><small>Estimated OT take-home (net)</small><strong id="netOtPay">$0.00</strong></div>
+        <div class="metric"><small>Gross OT pay</small><strong id="grossOtPay">$0.00</strong></div>
         <div class="metric"><small>Blended regular rate</small><strong id="blended">$0.00/hr</strong></div>
-        <div class="metric"><small>OT premium only</small><strong id="premium">$0.00</strong></div>
-        <div class="metric"><small>Effective pay / OT hour</small><strong id="effective">$0.00</strong></div>
+        <div class="metric"><small>Net / OT hour</small><strong id="netEffective">$0.00/hr</strong></div>
       </div>
 
       <div class="formula" id="formula"></div>
-      <div class="note">OT hours, regular hours, and total worked hours stay synchronized. Changing OT or regular hours updates the total; changing the total recalculates regular hours. This calculator mirrors the structure visible on the uploaded paystubs: overtime straight time is paid at base rate, plus an additional 0.5× premium based on the blended regular rate.</div>
+      <div class="note">The 63.45% take-home default is calibrated from the two uploaded paychecks: $1,143.30 net on $1,812.31 gross and $1,081.41 net on $1,695.17 gross. It is an estimate, because actual withholding can change from check to check. OT hours update total worked hours immediately.</div>
     </section>
   </main>
   <script type="module" src="./calculator.mjs"></script>
