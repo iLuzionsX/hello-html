@@ -12,7 +12,6 @@
       color-scheme:dark;
       --bg:#07100b;
       --surface:#0d1912;
-      --surface-2:#122019;
       --line:rgba(255,255,255,.09);
       --line-strong:rgba(255,255,255,.15);
       --text:#f5f8f5;
@@ -21,7 +20,7 @@
       --accent:#c0ff5b;
       --accent-soft:rgba(192,255,91,.10);
       --accent-line:rgba(192,255,91,.27);
-      --shadow:0 28px 90px rgba(0,0,0,.36);
+      --shadow:0 28px 90px rgba(0,0,0,.34);
       font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
     }
     *{box-sizing:border-box}
@@ -38,56 +37,46 @@
       height:100dvh;
       margin:0 auto;
       padding:max(11px,env(safe-area-inset-top)) 12px max(11px,env(safe-area-inset-bottom));
-      display:grid;
-      grid-template-rows:40px minmax(0,1fr);
+      display:flex;
+      flex-direction:column;
       gap:9px;
       overflow:hidden;
-      background:
-        radial-gradient(420px 260px at 100% -8%,rgba(192,255,91,.12),transparent 62%),
-        var(--bg);
+      background:radial-gradient(420px 260px at 100% -8%,rgba(192,255,91,.12),transparent 62%),var(--bg);
     }
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .topbar{height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px}
     .brand{font-size:.92rem;font-weight:790;letter-spacing:-.02em}
     .gear{width:40px;height:40px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035);color:#dfe6e1;display:grid;place-items:center;padding:0;cursor:pointer}
     .gear svg{width:18px;height:18px;stroke:currentColor}
     .gear:active{transform:scale(.96)}
 
     .utility-card{
-      min-height:0;
-      overflow:auto;
-      scrollbar-width:none;
+      flex:none;
       border:1px solid var(--line);
       border-radius:27px;
       padding:17px;
       background:linear-gradient(180deg,rgba(16,30,22,.98),rgba(9,18,13,.99));
       box-shadow:var(--shadow);
     }
-    .utility-card::-webkit-scrollbar{display:none}
-    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+    .section-head{margin-bottom:11px}
     .section-head h1{font-size:1rem;line-height:1.2;letter-spacing:-.02em;margin:0;font-weight:800}
-    .clear{border:0;background:transparent;color:var(--muted);font-size:.72rem;font-weight:720;padding:6px 0;cursor:pointer}
-    .clear:active{color:var(--accent)}
 
     .presets{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
     .preset{min-height:46px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.035);color:#d9e2dc;font-size:.79rem;font-weight:800;cursor:pointer}
     .preset[aria-pressed="true"]{border-color:var(--accent-line);background:var(--accent-soft);color:var(--accent)}
     .preset:active{transform:scale(.97)}
 
-    .stepper{display:grid;grid-template-columns:58px minmax(0,1fr) 58px;align-items:center;gap:8px;margin-top:9px;padding:8px;border:1px solid var(--accent-line);border-radius:20px;background:rgba(192,255,91,.065)}
-    .step-button{width:58px;height:58px;border:1px solid var(--line-strong);border-radius:16px;background:rgba(255,255,255,.04);color:var(--text);display:grid;place-items:center;padding:0;font-size:1.45rem;font-weight:500;cursor:pointer}
-    .step-button:active{transform:scale(.96);background:rgba(192,255,91,.09)}
+    .stepper{display:grid;grid-template-columns:58px minmax(0,1fr) 58px;align-items:center;gap:8px;margin-top:9px;padding:8px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.018)}
+    .step-button{width:58px;height:58px;border:1px solid var(--line-strong);border-radius:16px;background:rgba(255,255,255,.035);color:var(--text);display:grid;place-items:center;padding:0;font-size:1.45rem;font-weight:500;cursor:pointer}
+    .step-button:active{transform:scale(.96);background:rgba(255,255,255,.065)}
     .time-display{text-align:center;min-width:0}
     .time-display strong{display:block;font-size:clamp(2.1rem,11vw,3rem);line-height:1;font-weight:900;letter-spacing:-.055em;font-variant-numeric:tabular-nums;white-space:nowrap}
-    .time-display span{display:block;margin-top:4px;color:var(--muted-2);font-size:.65rem}
 
     .divider{height:1px;background:var(--line);margin:17px 0 15px}
     .answer-label{font-size:.78rem;color:#bbc7bf;font-weight:700}
     .money{margin-top:5px;font-size:clamp(4.7rem,21vw,6.1rem);line-height:.88;letter-spacing:-.08em;font-weight:930;font-variant-numeric:tabular-nums;white-space:nowrap}
-    .money .about{font-size:.78rem;color:var(--muted);font-weight:700;letter-spacing:0;vertical-align:top;margin-right:4px}
     .secondary{margin-top:11px;color:var(--muted);font-size:.81rem;line-height:1.4;font-variant-numeric:tabular-nums}
     .secondary strong{color:#dce5df;font-weight:760}
     .secondary .sep{color:#4f5e54;margin:0 5px}
-    .estimate-note{margin:7px 0 0;color:var(--muted-2);font-size:.66rem;line-height:1.35}
 
     .calculation{margin-top:15px;border-top:1px solid var(--line)}
     .calculation summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:49px;color:#d8e1db;font-size:.78rem;font-weight:760;cursor:pointer}
@@ -99,10 +88,11 @@
     .calc-row{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;border-bottom:1px solid var(--line);font-size:.72rem;color:var(--muted)}
     .calc-row:last-child{border-bottom:0}
     .calc-row strong{color:#dfe7e1;font-size:.76rem;font-variant-numeric:tabular-nums;text-align:right}
-    .formula{margin:9px 2px 0;color:var(--muted-2);font-size:.67rem;line-height:1.45}
+    .formula,.calc-note{margin:9px 2px 0;color:var(--muted-2);font-size:.67rem;line-height:1.45}
+    .calc-note{margin-top:7px}
     .settings-link{margin-top:9px;border:0;background:transparent;color:var(--accent);padding:4px 2px;font-size:.72rem;font-weight:760;cursor:pointer}
 
-    .gear:focus-visible,.preset:focus-visible,.step-button:focus-visible,.clear:focus-visible,.settings-link:focus-visible,.close-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .gear:focus-visible,.preset:focus-visible,.step-button:focus-visible,.settings-link:focus-visible,.close-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
     dialog{width:min(448px,calc(100% - 16px));max-height:min(78dvh,650px);margin:auto auto max(8px,env(safe-area-inset-bottom));border:1px solid var(--line-strong);border-radius:26px;padding:0;background:#0d1912;color:var(--text);box-shadow:0 38px 100px rgba(0,0,0,.72)}
     dialog::backdrop{background:rgba(0,0,0,.66);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -121,7 +111,6 @@
     .prefix,.suffix{font-size:.72rem;color:var(--muted-2);font-weight:720;flex:none}
     .field input{width:100%;font-size:1.08rem;font-weight:800}
     .sheet-section{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
-    .sheet-section-title{margin-bottom:9px;color:#cbd5ce;font-size:.72rem;font-weight:760}
     .advanced-settings{border:0;margin:0;padding:0}
     .advanced-settings summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:42px;color:#d2dcd5;font-size:.74rem;font-weight:740;cursor:pointer}
     .advanced-settings summary::-webkit-details-marker{display:none}
@@ -135,11 +124,11 @@
       .app{height:min(820px,calc(100dvh - 32px));margin-top:16px;margin-bottom:16px;border:1px solid var(--line);border-radius:32px;box-shadow:0 40px 120px rgba(0,0,0,.45)}
     }
     @media(max-height:720px){
-      .app{padding-top:max(7px,env(safe-area-inset-top));padding-bottom:max(7px,env(safe-area-inset-bottom));grid-template-rows:36px minmax(0,1fr);gap:6px}
-      .gear{width:36px;height:36px;border-radius:12px}.utility-card{padding:13px 14px;border-radius:22px}.section-head{margin-bottom:8px}.preset{min-height:40px}.stepper{grid-template-columns:50px minmax(0,1fr) 50px;padding:6px}.step-button{width:50px;height:50px}.time-display strong{font-size:2.25rem}.divider{margin:12px 0}.money{font-size:4rem}.secondary{margin-top:7px}.calculation{margin-top:10px}.calculation summary{min-height:43px}
+      .app{padding-top:max(7px,env(safe-area-inset-top));padding-bottom:max(7px,env(safe-area-inset-bottom));gap:6px}
+      .topbar{height:36px}.gear{width:36px;height:36px;border-radius:12px}.utility-card{padding:13px 14px;border-radius:22px}.section-head{margin-bottom:8px}.preset{min-height:40px}.stepper{grid-template-columns:50px minmax(0,1fr) 50px;padding:6px}.step-button{width:50px;height:50px}.time-display strong{font-size:2.25rem}.divider{margin:12px 0}.money{font-size:4rem}.secondary{margin-top:7px}.calculation{margin-top:10px}.calculation summary{min-height:43px}
     }
     @media(max-height:610px){
-      .presets{gap:5px}.preset{min-height:34px}.stepper{margin-top:6px;grid-template-columns:44px minmax(0,1fr) 44px}.step-button{width:44px;height:44px;border-radius:13px}.time-display strong{font-size:2rem}.time-display span{display:none}.divider{margin:9px 0}.money{font-size:3.45rem}.estimate-note{display:none}.calculation{margin-top:7px}.calculation summary{min-height:38px}
+      .presets{gap:5px}.preset{min-height:34px}.stepper{margin-top:6px;grid-template-columns:44px minmax(0,1fr) 44px}.step-button{width:44px;height:44px;border-radius:13px}.time-display strong{font-size:2rem}.divider{margin:9px 0}.money{font-size:3.45rem}.calculation{margin-top:7px}.calculation summary{min-height:38px}
     }
   </style>
 </head>
@@ -148,15 +137,15 @@
     <header class="topbar">
       <div class="brand">OT Take-Home</div>
       <button class="gear" type="button" data-open="profile" aria-label="Edit pay settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Z"/><path d="M19.1 13.6a1.6 1.6 0 0 0 .32 1.77l.05.05-1.9 3.28-.07-.02a1.6 1.6 0 0 0-1.74.26l-.08.07a1.6 1.6 0 0 0-.52 1.72v.08h-3.79v-.08a1.6 1.6 0 0 0-.52-1.72l-.08-.07a1.6 1.6 0 0 0-1.74-.26l-.07.02-1.9-3.28.05-.05a1.6 1.6 0 0 0 .32-1.77l-.04-.1a1.6 1.6 0 0 0-1.23-1.18H4.2V8.54h.08A1.6 1.6 0 0 0 5.5 7.36l.04-.1a1.6 1.6 0 0 0-.32-1.77l-.05-.05 1.9-3.28.07.02a1.6 1.6 0 0 0 1.74-.26l.08-.07a1.6 1.6 0 0 0 .52-1.72V.05h3.79v.08a1.6 1.6 0 0 0 .52 1.72l.08.07a1.6 1.6 0 0 0 1.74.26l.07-.02 1.9 3.28-.05.05a1.6 1.6 0 0 0-.32 1.77l.04.1a1.6 1.6 0 0 0 1.23 1.18h.08v3.79h-.08a1.6 1.6 0 0 0-1.23 1.18l-.04.1Z" transform="scale(.9) translate(1.35 1.35)"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
       </button>
     </header>
 
     <section class="utility-card" aria-label="Overtime take-home calculator">
-      <div class="section-head">
-        <h1>Overtime hours</h1>
-        <button class="clear" type="button" data-ot-set="0">Clear</button>
-      </div>
+      <div class="section-head"><h1>Overtime hours</h1></div>
 
       <div class="presets" aria-label="Common overtime amounts">
         <button class="preset" type="button" data-ot-set="1" aria-pressed="false">1 hr</button>
@@ -165,12 +154,9 @@
         <button class="preset" type="button" data-ot-set="8" aria-pressed="false">8 hr</button>
       </div>
 
-      <div class="stepper" aria-label="Adjust overtime in fifteen minute increments">
+      <div class="stepper" aria-label="Adjust overtime">
         <button class="step-button" type="button" data-ot-add="-0.25" aria-label="Subtract fifteen minutes">−</button>
-        <div class="time-display" aria-live="polite">
-          <strong id="timeDisplay">1h 33m</strong>
-          <span>15-minute adjustments</span>
-        </div>
+        <div class="time-display" aria-live="polite"><strong id="timeDisplay">1h 33m</strong></div>
         <button class="step-button" type="button" data-ot-add="0.25" aria-label="Add fifteen minutes">+</button>
       </div>
       <input id="otHours" class="sr-only" type="number" min="0" step="0.01" value="1.55" aria-hidden="true" tabindex="-1" />
@@ -180,7 +166,6 @@
       <div class="answer-label">You'd take home about</div>
       <div class="money" id="netOtPay">$68</div>
       <div class="secondary"><strong id="grossOtPay">$107 gross</strong><span class="sep">·</span><span id="withheldPay">$39 withheld</span></div>
-      <p class="estimate-note">Estimate. Actual withholding varies.</p>
 
       <details class="calculation" id="calculation">
         <summary><span>How this is calculated</span><span class="chevron" aria-hidden="true">⌄</span></summary>
@@ -192,6 +177,7 @@
             <div class="calc-row"><span>Blended regular rate</span><strong id="blended">$49.87/hr</strong></div>
           </div>
           <p class="formula" id="formula"></p>
+          <p class="calc-note">Estimate. Actual withholding varies.</p>
           <button class="settings-link" type="button" data-open="profile">Change pay settings →</button>
         </div>
       </details>
