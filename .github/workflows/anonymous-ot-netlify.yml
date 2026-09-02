@@ -1,0 +1,15 @@
+name: Anonymous OT Calculator Netlify
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/anonymous-ot-netlify.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy OT calculator anonymously to Netlify
+        run: npx --yes netlify-cli@latest deploy --allow-anonymous --dir=ot-calculator --json
