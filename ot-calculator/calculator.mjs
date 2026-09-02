@@ -44,6 +44,12 @@ if (typeof document !== 'undefined') {
     document.getElementById('formula').innerHTML = `Gross OT = ${money(r.otStraight)} straight time + ${money(r.premium)} premium = <b>${money(r.grossOtPay)}</b><br>Estimated net OT = ${money(r.grossOtPay)} × ${(r.takeHome * 100).toFixed(2)}% take-home = <b>${money(r.netOtPay)}</b><br>Blended regular rate = <b>${money(r.blended)}/hr</b>`;
   }
 
+  function updateFromOT(value) {
+    setHours('otHours', value);
+    setHours('worked', syncFromOT(v('regularHours'), v('otHours')));
+    render();
+  }
+
   els.otHours.addEventListener('input', () => {
     setHours('worked', syncFromOT(v('regularHours'), v('otHours')));
     render();
@@ -54,9 +60,18 @@ if (typeof document !== 'undefined') {
     render();
   });
 
-  els.worked.addEventListener('input', () => {
-    setHours('regularHours', syncFromWorked(v('worked'), v('otHours')));
-    render();
+  if (!els.worked.readOnly) {
+    els.worked.addEventListener('input', () => {
+      setHours('regularHours', syncFromWorked(v('worked'), v('otHours')));
+      render();
+    });
+  }
+
+  document.querySelectorAll('[data-ot-add]').forEach(button => {
+    button.addEventListener('click', () => updateFromOT(v('otHours') + (parseFloat(button.dataset.otAdd) || 0)));
+  });
+  document.querySelectorAll('[data-ot-set]').forEach(button => {
+    button.addEventListener('click', () => updateFromOT(parseFloat(button.dataset.otSet) || 0));
   });
 
   ['base','upsell','shift','other','takeHomeRate'].forEach(id => els[id].addEventListener('input', render));
