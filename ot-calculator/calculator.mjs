@@ -52,14 +52,17 @@ if (typeof document !== 'undefined') {
       upsell:v('upsell'), shift:v('shift'), other:v('other'), takeHomeRate:v('takeHomeRate')
     };
     const r = calculate(data);
-    const withheld = Math.max(0, r.grossOtPay - r.netOtPay);
+    const exactWithheld = Math.max(0, r.grossOtPay - r.netOtPay);
+    const roundedGross = Math.round(r.grossOtPay);
+    const roundedNet = Math.round(r.netOtPay);
+    const roundedWithheld = Math.max(0, roundedGross - roundedNet);
 
     document.getElementById('timeDisplay').textContent = humanDuration(data.ot);
-    document.getElementById('netOtPay').textContent = moneyWhole(r.netOtPay);
-    document.getElementById('grossOtPay').textContent = `${moneyWhole(r.grossOtPay)} gross`;
-    document.getElementById('withheldPay').textContent = `${moneyWhole(withheld)} withheld`;
+    document.getElementById('netOtPay').textContent = moneyWhole(roundedNet);
+    document.getElementById('grossOtPay').textContent = `${moneyWhole(roundedGross)} gross`;
+    document.getElementById('withheldPay').textContent = `${moneyWhole(roundedWithheld)} withheld`;
     document.getElementById('grossOtPayDetailed').textContent = money(r.grossOtPay);
-    document.getElementById('withheldDetailed').textContent = money(withheld);
+    document.getElementById('withheldDetailed').textContent = money(exactWithheld);
     document.getElementById('netEffective').textContent = `${money(r.netEffective)}/hr`;
     document.getElementById('blended').textContent = `${money(r.blended)}/hr`;
     document.getElementById('formula').textContent =
