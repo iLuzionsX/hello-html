@@ -35,13 +35,13 @@
 
     <section class="card">
       <div class="grid">
-        <div><label>Base hourly rate</label><input id="base" type="number" step="0.01" value="43.98"></div>
-        <div><label>Overtime hours</label><input id="otHours" type="number" step="0.01" value="1.55"></div>
-        <div><label>Total hours worked</label><input id="worked" type="number" step="0.01" value="35.56"></div>
-        <div><label>Regular hours</label><input id="regularHours" type="number" step="0.01" value="34.01"></div>
-        <div><label>Upsell / incentive pay</label><input id="upsell" type="number" step="0.01" value="185"></div>
-        <div><label>Shift differential</label><input id="shift" type="number" step="0.01" value="24.42"></div>
-        <div class="span2"><label>Other includable pay</label><input id="other" type="number" step="0.01" value="0"></div>
+        <div><label>Base hourly rate</label><input id="base" type="number" min="0" step="0.01" value="43.98"></div>
+        <div><label>Overtime hours</label><input id="otHours" type="number" min="0" step="0.01" value="1.55"></div>
+        <div><label>Total hours worked</label><input id="worked" type="number" min="0" step="0.01" value="35.56"></div>
+        <div><label>Regular hours</label><input id="regularHours" type="number" min="0" step="0.01" value="34.01"></div>
+        <div><label>Upsell / incentive pay</label><input id="upsell" type="number" min="0" step="0.01" value="185"></div>
+        <div><label>Shift differential</label><input id="shift" type="number" min="0" step="0.01" value="24.42"></div>
+        <div class="span2"><label>Other includable pay</label><input id="other" type="number" min="0" step="0.01" value="0"></div>
       </div>
 
       <div class="results">
@@ -52,30 +52,9 @@
       </div>
 
       <div class="formula" id="formula"></div>
-      <div class="note">This calculator mirrors the structure visible on the uploaded paystubs: overtime straight time is paid at base rate, plus an additional 0.5× premium based on the blended regular rate. Payroll rules can vary by employer and by what compensation is legally includable in the regular rate.</div>
+      <div class="note">OT hours, regular hours, and total worked hours stay synchronized. Changing OT or regular hours updates the total; changing the total recalculates regular hours. This calculator mirrors the structure visible on the uploaded paystubs: overtime straight time is paid at base rate, plus an additional 0.5× premium based on the blended regular rate.</div>
     </section>
   </main>
-<script>
-const ids=['base','otHours','worked','regularHours','upsell','shift','other'];
-ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
-const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number.isFinite(n)?n:0);
-function v(id){return parseFloat(document.getElementById(id).value)||0}
-function calc(){
-  const base=v('base'), ot=v('otHours'), worked=v('worked'), reg=v('regularHours'), upsell=v('upsell'), shift=v('shift'), other=v('other');
-  const regularPay=reg*base;
-  const otStraight=ot*base;
-  const includable=regularPay+otStraight+upsell+shift+other;
-  const blended=worked>0?includable/worked:0;
-  const premium=blended*.5*ot;
-  const otPay=otStraight+premium;
-  const effective=ot>0?otPay/ot:0;
-  document.getElementById('otPay').textContent=money(otPay);
-  document.getElementById('blended').textContent=money(blended)+'/hr';
-  document.getElementById('premium').textContent=money(premium);
-  document.getElementById('effective').textContent=money(effective)+'/hr';
-  document.getElementById('formula').innerHTML=`Blended rate = (${money(regularPay)} regular + ${money(otStraight)} OT straight + ${money(upsell)} upsell + ${money(shift)} shift diff + ${money(other)} other) ÷ ${worked.toFixed(2)} worked hours = <b>${money(blended)}/hr</b><br>OT premium = ${money(blended)} × 0.5 × ${ot.toFixed(2)} = <b>${money(premium)}</b><br>Total OT pay = ${money(otStraight)} + ${money(premium)} = <b>${money(otPay)}</b>`;
-}
-calc();
-</script>
+  <script type="module" src="./calculator.mjs"></script>
 </body>
 </html>
