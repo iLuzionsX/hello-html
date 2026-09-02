@@ -51,11 +51,6 @@ try {
   assert.equal(roundedNet, 87);
   assert.equal(roundedWithheld, 51);
 
-  await page.getByRole('button', { name: 'Add fifteen minutes' }).click();
-  assert.equal(await page.locator('#otHours').inputValue(), '2.25');
-  assert.equal(await page.locator('#timeDisplay').textContent(), '2h 15m');
-  assert.equal(await twoHourPreset.getAttribute('aria-pressed'), 'false');
-
   const stepperAppearance = await page.locator('.stepper').evaluate(el => {
     const style = getComputedStyle(el);
     return { borderColor: style.borderColor, backgroundColor: style.backgroundColor };
@@ -65,6 +60,12 @@ try {
     return { borderColor: style.borderColor, backgroundColor: style.backgroundColor };
   });
   assert.notEqual(stepperAppearance.borderColor, selectedPresetAppearance.borderColor, 'stepper should not use selected accent border');
+  assert.notEqual(stepperAppearance.backgroundColor, selectedPresetAppearance.backgroundColor, 'stepper should not use selected accent fill');
+
+  await page.getByRole('button', { name: 'Add fifteen minutes' }).click();
+  assert.equal(await page.locator('#otHours').inputValue(), '2.25');
+  assert.equal(await page.locator('#timeDisplay').textContent(), '2h 15m');
+  assert.equal(await twoHourPreset.getAttribute('aria-pressed'), 'false');
 
   await page.getByRole('button', { name: 'Subtract fifteen minutes' }).click();
   assert.equal(await page.locator('#otHours').inputValue(), '2.00');
